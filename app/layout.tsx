@@ -8,13 +8,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "多数人的历史",
     description: "历史从我们这里开始记录。",
-    images: ["https://history-of-ordinary-people.verasimedazi0.chatgpt.site/og.jpg"],
+    images: ["https://history-of-ordinary-people.verasimedazi0.chatgpt.site/images/brand/social-preview.jpg"],
   },
   twitter: {
     card: "summary_large_image",
     title: "多数人的历史",
     description: "历史从我们这里开始记录。",
-    images: ["https://history-of-ordinary-people.verasimedazi0.chatgpt.site/og.jpg"],
+    images: ["https://history-of-ordinary-people.verasimedazi0.chatgpt.site/images/brand/social-preview.jpg"],
   },
 };
 

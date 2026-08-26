@@ -1,100 +1,73 @@
-# vinext-starter
+# 多数人的历史
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+一个面向普通人的数字生命档案与在线家谱原型。用户可以浏览人物故事、查看人生时间线和家族关系，并生成纪念二维码。
 
-## Prerequisites
+> 当前项目为产品 Demo，人物、经历和数据均为演示内容，不会保存用户在创建流程中填写的信息。
 
-- Node.js `>=22.13.0`
+## 功能
 
-## Quick Start
+- 九位人物的生命档案与分章节传记
+- 按姓名、地区、职业和年代浏览
+- 四代家族关系展示
+- 家人回忆的浏览器语音朗读
+- 可扫描、复制和下载的纪念二维码
+- 三步生命档案创建体验
+- 响应式中文档案馆视觉设计
+
+## 技术栈
+
+- React 19
+- TypeScript
+- vinext / Vite
+- Tailwind CSS 4
+- Cloudflare Workers 兼容构建
+
+## 本地运行
+
+需要 Node.js `>=22.13.0`。
 
 ```bash
 npm install
 npm run dev
-npm run build
 ```
 
-This starter does not use `wrangler.jsonc`.
+浏览器打开终端输出的本地地址。
 
-## Included Shape
+## 常用命令
 
-- edit site code under `app/`
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
-
-## Workspace Auth Headers
-
-Signed-in visitors receive both `oai-authenticated-user-id` and `oai-authenticated-user-email`. Private Sites require every visitor to sign in; public Sites may also have anonymous visitors, for whom neither header is present.
-
-The user ID is stable for the same user on the same Site and different across Sites. Email and name are intended for display or contact purposes.
-
-SIWC-authenticated workspace sites may also receive
-`oai-authenticated-user-full-name` when the user's SIWC profile has a non-empty
-`name` claim. The full-name value is percent-encoded UTF-8 and is accompanied by
-`oai-authenticated-user-full-name-encoding: percent-encoded-utf-8`.
-
-Treat the full name as optional and fall back to email when it is absent:
-
-```tsx
-import { headers } from "next/headers";
-
-export default async function Home() {
-  const requestHeaders = await headers();
-  const userId = requestHeaders.get("oai-authenticated-user-id");
-  const email = requestHeaders.get("oai-authenticated-user-email");
-  const encodedFullName = requestHeaders.get("oai-authenticated-user-full-name");
-  const fullName =
-    encodedFullName &&
-    requestHeaders.get("oai-authenticated-user-full-name-encoding") ===
-      "percent-encoded-utf-8"
-      ? decodeURIComponent(encodedFullName)
-      : null;
-
-  const displayName = fullName ?? email;
-  // ...
-}
+```bash
+npm run dev      # 本地开发
+npm run build    # 生产构建
+npm run lint     # 代码检查
+npm test         # 构建并运行测试
 ```
 
-## Optional Dispatch-Owned ChatGPT Sign-In
+## 项目结构
 
-Import the ready-to-use helpers from `app/chatgpt-auth.ts` when the site needs
-optional or required ChatGPT sign-in:
+```text
+app/                    页面、布局和全局样式
+public/images/
+  archive/              家庭档案与历史照片
+  brand/                品牌及分享预览素材
+  portraits/            人物肖像
+worker/                 Cloudflare Worker 入口
+build/                  Sites/Vite 构建适配
+db/                     预留的数据模型
+docs/                   项目说明文档
+tests/                  自动化测试
+.openai/hosting.json    Sites 发布配置
+```
 
-- Use `getChatGPTUser()` for optional signed-in UI.
-- Use `requireChatGPTUser(returnTo)` for server-rendered pages that should send
-  anonymous visitors through Sign in with ChatGPT.
-- Use `chatGPTSignInPath(returnTo)` and `chatGPTSignOutPath(returnTo)` for
-  browser links or actions.
-- Pass a same-origin relative `returnTo` path for the destination after sign-in
-  or sign-out. The helper validates and safely encodes it.
-- Mark protected pages with `export const dynamic = "force-dynamic"` because
-  they depend on per-request identity headers.
+更详细的目录职责见 [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)。
 
-Dispatch owns `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, the
-OAuth cookies, and identity header injection. Do not implement app routes for
-those reserved paths. Routes that do not import and call the helper remain
-anonymous-compatible.
+## 在线演示
 
-SIWC establishes identity only; it does not prove workspace membership. Use the
-Sites hosting platform's access policy controls for workspace-wide restrictions,
-or enforce explicit server-side membership or allowlist checks.
+[https://history-of-ordinary-people.verasimedazi0.chatgpt.site](https://history-of-ordinary-people.verasimedazi0.chatgpt.site)
 
-Use SIWC for account pages, user-specific dashboards, saved records, and write
-actions tied to the current ChatGPT user. Leave public content anonymous.
+## 素材说明
 
-## Useful Commands
+人物与故事均用于概念验证。正式产品上线前，应替换为获得授权的真实资料，并补充隐私、授权、申诉和数字遗产管理机制。
 
-- `npm run dev`: start local development
-- `npm run build`: verify the vinext build output
-- `npm test`: build the starter and verify its rendered loading skeleton
-- `npm run db:generate`: generate Drizzle migrations after schema changes
+## License
 
-## Learn More
-
-- [vinext Documentation](https://github.com/cloudflare/vinext)
-- [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+当前未授予开源许可证。未经许可，不得将项目中的图片和内容用于商业用途。
